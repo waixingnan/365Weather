@@ -1,0 +1,10 @@
+<litepal>
+    <dbname value="365Weather" />
+    <version value="1" />
+    <list>
+        <mapping class="com.a365weather.android.db.Province" />
+        <mapping class="com.a365weather.android.db.City" />
+        <mapping class="com.a365weather.android.db.County" />
+
+    </list>
+</litepal>
