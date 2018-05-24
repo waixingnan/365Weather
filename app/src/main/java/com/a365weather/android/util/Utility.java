@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.a365weather.android.db.City;
 import com.a365weather.android.db.County;
 import com.a365weather.android.db.Province;
+import com.a365weather.android.gson.Weacher;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +16,23 @@ import org.json.JSONObject;
  * json：gson 解析省市县数据
  * */
 public class Utility {
+
+    /**
+     * 将返回的JSON 数据解析成weather实体类。
+     * @param response
+     * @return
+     */
+    public static Weacher handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject=new JSONObject(response);
+            JSONArray jsonArray=jsonObject.getJSONArray("HeWeather");
+            String weatherContent=jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weacher.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      *  解析和处理服务器返回的省数据
