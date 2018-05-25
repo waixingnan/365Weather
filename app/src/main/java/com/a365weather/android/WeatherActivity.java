@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.a365weather.android.gson.Forecast;
 import com.a365weather.android.gson.Weacher;
@@ -54,6 +55,8 @@ public class WeatherActivity extends AppCompatActivity {
     private String weatherId;
     public DrawerLayout drawerLayout;
     private Button navButton;
+    private android.support.v7.widget.Toolbar toolbar;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +77,7 @@ public class WeatherActivity extends AppCompatActivity {
         bingPicImg = findViewById(R.id.bing_pic_img);
         weatherLayout = findViewById(R.id.weather_layout);
         titleCity = findViewById(R.id.title_city);
-        titleUpdateTime = findViewById(R.id.title_update_time);
+//        titleUpdateTime = findViewById(R.id.title_update_time);
         degreeText = findViewById(R.id.degree_text);
         weatherInfoText = findViewById(R.id.weather_info_text);
         forecastLayout = findViewById(R.id.forecast_layout);
@@ -86,7 +89,13 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh = findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeColors(colorPrimary);
         drawerLayout = findViewById(R.id.drawer_layout);
-        navButton = findViewById(R.id.nav_button);
+//        navButton = findViewById(R.id.nav_button);
+
+        toolbar = findViewById(R.id.Toolbar_title);
+        toolbar.setNavigationIcon(R.drawable.ic_nav);
+        toolbar.setTitle("");
+
+        setSupportActionBar(toolbar);
     }
 
     private void initData() {
@@ -104,9 +113,9 @@ public class WeatherActivity extends AppCompatActivity {
             weatherId = weacher.basic.weatherId;
             showWeatherInfo(weacher);
         } else {
-            //无缓存时去服务器查询天气。
-            weatherId = getIntent().getStringExtra("weather_id");
-            requestWeather(weatherId);
+        //无缓存时去服务器查询天气。
+        weatherId = getIntent().getStringExtra("weather_id");
+        requestWeather(weatherId);
         }
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -114,7 +123,13 @@ public class WeatherActivity extends AppCompatActivity {
                 requestWeather(weatherId);
             }
         });
-        navButton.setOnClickListener(new View.OnClickListener() {
+//        navButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                drawerLayout.openDrawer(GravityCompat.START);
+//            }
+//        });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(GravityCompat.START);
@@ -178,7 +193,7 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (weacher != null && "ok".equals(weacher.status)) {
-                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
+                            editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
                             editor.putString("weather", responseText);
                             editor.apply();
                             showWeatherInfo(weacher);
@@ -202,17 +217,18 @@ public class WeatherActivity extends AppCompatActivity {
     public void showWeatherInfo(Weacher weather) {
 
         if (weather != null && "ok".equals(weather.status)) {
-            Intent intent=new Intent(this, AutoUpdateService.class);
+            Intent intent = new Intent(this, AutoUpdateService.class);
             startService(intent);
-        }else {
+        } else {
 
         }
         String cityName = weather.basic.cityName;
         String updateTime = weather.basic.update.updateTime.split("")[1];
         String degree = weather.now.temperature + "℃";
         String weatherInfo = weather.now.more.info;
+
         titleCity.setText(cityName);
-        titleUpdateTime.setText(updateTime);
+//        titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
         forecastLayout.removeAllViews();
